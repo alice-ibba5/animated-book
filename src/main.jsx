@@ -3,6 +3,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 //import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import './App.css'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const controls = new OrbitControls(camera, renderer.domElement);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -47,7 +48,7 @@ const lightHelper = new THREE.PointLightHelper(pointLight);
 const gridHelper = new THREE.GridHelper(200, 50);
 scene.add(lightHelper, gridHelper);
 
-const controls = new OrbitControls(camera, renderer.domElement);
+
 
 const moonTexture = new THREE.TextureLoader().load("moon.jpg");
 const normalTexture = new THREE.TextureLoader().load("normal.jpg");
