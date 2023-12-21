@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-//import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import './App.css'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-const controls = new OrbitControls(camera, renderer.domElement);
+
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -20,17 +21,21 @@ camera.position.setY(50);
 
 renderer.render(scene, camera);
 
-const loader = new OBJLoader();
+/*const loader = new OBJLoader();
 loader.load("book.obj", function (object) {
 
   const objectObj = object.scene;
-
-
-
   // Aggiungi l'oggetto alla scena
   scene.add(object);
-});
+});*/
 
+const loader = new GLTFLoader();
+loader.load("model.glb", function (gltf) {
+
+  const objectObj = gltf.scene;
+  // Aggiungi l'oggetto alla scena
+  scene.add(objectObj);
+});
 
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
 const material = new THREE.MeshStandardMaterial({ color: 0xFF6347 });
@@ -81,7 +86,7 @@ const spaceTexture = new THREE.TextureLoader().load("space.jpg");
 scene.background = spaceTexture;
 
 
-
+const controls = new OrbitControls(camera, renderer.domElement);
 
 
 function animate() {
