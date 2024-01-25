@@ -13,11 +13,13 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("canvas"),
 });
 
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Tipo di mappa ombra
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(33);
-camera.position.setX(0);
-camera.position.setY(14);
+camera.position.setZ(20);
+camera.position.setX(20);
+camera.position.setY(2);
 
 renderer.render(scene, camera);
 
@@ -31,6 +33,7 @@ loader.load("libro-rosso.glb", function (gltf) {
 
   // Scala l'oggetto raddoppiandone le dimensioni
   objectGltf.scale.set(20, 20, 20);
+  objectGltf.position.set(0, -12, 20);
 
   // Aggiungi l'oggetto alla scena
   scene.add(objectGltf);
@@ -40,23 +43,6 @@ loader.load("libro-rosso.glb", function (gltf) {
   const sideBookTexture = new THREE.TextureLoader().load("book-side.jpg");
 
   console.log("GLTF Scene:", gltf.scene);
-
-  // // Traversa l'oggetto GLTF e assegna i materiali alle mesh corrispondenti
-  // objectGltf.traverse((child) => {
-  //   if (child.isMesh) {
-
-  //     // Stampa le informazioni sul materiale
-  //     console.log("Material Index:", child.materialIndex);
-  //     console.log("Material Name:", child.material.name);  // Puoi anche stampare altre proprietà del materiale
-  //     console.log("Material Properties:", child.material);
-  //     // Supponendo che il modello ha solo due materiali, puoi assegnarli in base all'indice del materiale
-  //     if (child.materialIndex === 0) {
-  //       child.material = material1;
-  //     } else if (child.materialIndex === 1) {
-  //       child.material = material2;
-  //     }
-  //   }
-  // });
 
   objectGltf.traverse((child) => {
     if (child.isMesh && child.material.name.toLowerCase() === "cover") {
@@ -103,6 +89,172 @@ loader.load("libro-rosso.glb", function (gltf) {
     }
   });
 
+
+
+
+  //Importo la libreria
+  const loader2 = new GLTFLoader();
+  loader2.load("solo-libreria.glb", function (gltf2) {
+
+    const objectGltf2 = gltf2.scene;
+
+    // Scala l'oggetto raddoppiandone le dimensioni
+    objectGltf2.scale.set(20, 20, 20);
+    objectGltf2.position.set(-30, -21, 20);
+
+    // Aggiungi l'oggetto alla scena
+    scene.add(objectGltf2);
+
+    // Calcola il bounding box dell'oggetto
+    const boundingBox = new THREE.Box3().setFromObject(objectGltf2);
+
+    // Calcola il centro del bounding box
+    const center = new THREE.Vector3();
+    boundingBox.getCenter(center);
+
+    // Imposta la posizione della camera in modo che sia davanti all'oggetto
+    camera.position.copy(center.clone().add(new THREE.Vector3(0, 2, 37)));
+
+    // Fai in modo che la camera guardi verso il centro dell'oggetto
+    camera.lookAt(center);
+
+    const legnoTexture = new THREE.TextureLoader().load("legno.jpg", (texture) => {
+      // Callback chiamato quando la texture è stata caricata con successo
+      // Assegna la texture ai materiali qui
+      console.log("Texture 'legno.jpg' caricata con successo");
+      console.log("Dimensioni della texture:", texture.image.width, texture.image.height);
+
+    });
+    const pelleTexture = new THREE.TextureLoader().load("pelle.jpg");
+    const sideBookTexture2 = new THREE.TextureLoader().load("book-side.jpg");
+
+    console.log("GLTF Scene:", gltf2.scene);
+
+    objectGltf2.traverse((child) => {
+      if (child.isMesh && child.material.name.toLowerCase() === "_1") {
+        child.material.emissive.setHex(0x000000);  // Imposta emissive su nero
+        child.material.metalness = 0;  // Disattiva metalness
+        child.material.roughness = 1;  // Disattiva roughness
+        // ... altre proprietà ...
+      }
+    });
+
+    objectGltf2.traverse((child) => {
+      if (child.isMesh) {
+        console.log("Mesh Material2:", child.material);
+        console.log("Material Name2:", child.material.name);
+        console.log("Material Properties2:", child.material);
+
+        // Controlla il nome del materiale in modo case-insensitive
+        const materialName2 = child.material.name.toLowerCase();
+
+        // Assegna la texture in base al nome del materiale
+        switch (materialName2) {
+          case "_1":
+            child.material.map = legnoTexture;
+            child.material.normalMap = legnoTexture;
+            child.material.needsUpdate = true;
+            break;
+          case "Sumele_Skin":
+            child.material.map = pelleTexture;
+            child.material.normalMap = pelleTexture;
+            child.material.needsUpdate = true;
+            break;
+          case "M_0010_Snow":
+            child.material.map = sideBookTexture2;
+            child.material.normalMap = sideBookTexture2;
+            child.material.needsUpdate = true;
+            break;
+          case "material":
+            child.material.map = legnoTexture;
+            child.material.normalMap = legnoTexture;
+            child.material.needsUpdate = true;
+            break;
+          default:
+            // Gestisci altri materiali se necessario
+            break;
+        }
+        // Prova a forzare l'aggiornamento della texture
+        child.material.needsUpdate = true;
+      }
+    });
+
+    //Importo i libri
+    const loader3 = new GLTFLoader();
+    loader3.load("solo-libri.glb", function (gltf3) {
+
+      const objectGltf3 = gltf3.scene;
+
+      // Scala l'oggetto raddoppiandone le dimensioni
+      objectGltf3.scale.set(20, 20, 20);
+      objectGltf3.position.set(-102, -21, 20);
+
+      // Aggiungi l'oggetto alla scena
+      scene.add(objectGltf3);
+
+      const legnoTexture = new THREE.TextureLoader().load("legno.jpg", (texture) => {
+        // Callback chiamato quando la texture è stata caricata con successo
+        // Assegna la texture ai materiali qui
+        console.log("Texture 'legno.jpg' caricata con successo");
+        console.log("Dimensioni della texture:", texture.image.width, texture.image.height);
+
+      });
+      const pelleTexture = new THREE.TextureLoader().load("pelle.jpg");
+      const sideBookTexture2 = new THREE.TextureLoader().load("book-side.jpg");
+
+      console.log("GLTF Scene:", gltf3.scene);
+
+      objectGltf3.traverse((child) => {
+        if (child.isMesh && child.material.name.toLowerCase() === "_1") {
+          child.material.emissive.setHex(0x000000);  // Imposta emissive su nero
+          child.material.metalness = 0;  // Disattiva metalness
+          child.material.roughness = 1;  // Disattiva roughness
+          // ... altre proprietà ...
+        }
+      });
+
+      objectGltf2.traverse((child) => {
+        if (child.isMesh) {
+          console.log("Mesh Material3:", child.material);
+          console.log("Material Name3:", child.material.name);
+          console.log("Material Properties3:", child.material);
+
+          // Controlla il nome del materiale in modo case-insensitive
+          const materialName3 = child.material.name.toLowerCase();
+
+          // Assegna la texture in base al nome del materiale
+          switch (materialName3) {
+            case "_1":
+              child.material.map = legnoTexture;
+              child.material.normalMap = legnoTexture;
+              child.material.needsUpdate = true;
+              break;
+            case "Sumele_Skin":
+              child.material.map = pelleTexture;
+              child.material.normalMap = pelleTexture;
+              child.material.needsUpdate = true;
+              break;
+            case "M_0010_Snow":
+              child.material.map = sideBookTexture2;
+              child.material.normalMap = sideBookTexture2;
+              child.material.needsUpdate = true;
+              break;
+            case "material":
+              child.material.map = legnoTexture;
+              child.material.normalMap = legnoTexture;
+              child.material.needsUpdate = true;
+              break;
+            default:
+              // Gestisci altri materiali se necessario
+              break;
+          }
+          // Prova a forzare l'aggiornamento della texture
+          child.material.needsUpdate = true;
+        }
+      });
+
+    });
+  })
   // Ottieni tutte le animazioni dall'oggetto GLTF
   const animations = gltf.animations;
 
@@ -121,7 +273,6 @@ loader.load("libro-rosso.glb", function (gltf) {
 });
 
 
-
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
 const material = new THREE.MeshStandardMaterial({ color: 0xFF6347 });
 const torus = new THREE.Mesh(geometry, material);
@@ -129,10 +280,12 @@ const torus = new THREE.Mesh(geometry, material);
 //scene.add(torus);
 
 const pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(5, 20, 5);
+pointLight.position.set(5, 20, 30);
+pointLight.castShadow = true; // Abilita la generazione di ombre
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(pointLight, ambientLight);
+
 
 const lightHelper = new THREE.PointLightHelper(pointLight);
 // const gridHelper = new THREE.GridHelper(200, 50);
@@ -142,7 +295,7 @@ scene.add(lightHelper);
 
 const moonTexture = new THREE.TextureLoader().load("moon.jpg");
 const normalTexture = new THREE.TextureLoader().load("normal.jpg");
-const bookTexture = new THREE.TextureLoader().load("libro.jpg");
+
 
 const moon = new THREE.Mesh(
   new THREE.SphereGeometry(15, 32, 32),
@@ -157,18 +310,18 @@ moon.position.set(50, 15, -30);
 
 function addStar() {
   const geometry = new THREE.SphereGeometry(0.25);
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
   const star = new THREE.Mesh(geometry, material);
 
-  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100))
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200))
 
   star.position.set(x, y, z);
-  // scene.add(star);
+  //scene.add(star);
 }
 
 Array(200).fill().forEach(addStar);
 
-const spaceTexture = new THREE.TextureLoader().load("libreria.jpg");
+const spaceTexture = new THREE.TextureLoader().load("space.jpg");
 scene.background = spaceTexture;
 
 
