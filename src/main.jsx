@@ -33,7 +33,7 @@ loader.load("libro-rosso.glb", function (gltf) {
 
   // Scala l'oggetto raddoppiandone le dimensioni
   objectGltf.scale.set(20, 20, 20);
-  objectGltf.position.set(0, -12, 20);
+  objectGltf.position.set(0, -11, 20);
 
   // Aggiungi l'oggetto alla scena
   scene.add(objectGltf);
@@ -100,7 +100,7 @@ loader.load("libro-rosso.glb", function (gltf) {
 
     // Scala l'oggetto raddoppiandone le dimensioni
     objectGltf2.scale.set(20, 20, 20);
-    objectGltf2.position.set(-30, -21, 20);
+    objectGltf2.position.set(-30, -20, 20);
 
     // Aggiungi l'oggetto alla scena
     scene.add(objectGltf2);
@@ -187,7 +187,7 @@ loader.load("libro-rosso.glb", function (gltf) {
 
       // Scala l'oggetto raddoppiandone le dimensioni
       objectGltf3.scale.set(20, 20, 20);
-      objectGltf3.position.set(-102, -21, 20);
+      objectGltf3.position.set(-102, -20, 20);
 
       // Aggiungi l'oggetto alla scena
       scene.add(objectGltf3);
@@ -286,6 +286,9 @@ pointLight.castShadow = true; // Abilita la generazione di ombre
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(pointLight, ambientLight);
 
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+scene.add(directionalLight);
+directionalLight.castShadow = true; // Abilita la generazione di ombre
 
 const lightHelper = new THREE.PointLightHelper(pointLight);
 // const gridHelper = new THREE.GridHelper(200, 50);
