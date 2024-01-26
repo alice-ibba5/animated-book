@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import './App.css'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -213,7 +212,7 @@ loader.load("libro-rosso.glb", function (gltf) {
         }
       });
 
-      objectGltf2.traverse((child) => {
+      objectGltf3.traverse((child) => {
         if (child.isMesh) {
           console.log("Mesh Material3:", child.material);
           console.log("Material Name3:", child.material.name);
